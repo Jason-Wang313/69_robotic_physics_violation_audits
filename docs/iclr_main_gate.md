@@ -6,14 +6,13 @@ Existing v2 decision: KILL_ARCHIVE
 
 Gate verdict: KILL_ARCHIVE
 
-Evidence digest: 2f199d27b8ab1d2c
+Evidence digest: 44d060481900fe1c
 
 Fatal blockers:
-- Synthetic-only evidence.
-- Template-generated experiment and writing.
-- No real robot or high-fidelity benchmark.
-- No trained WAM/model checkpoint.
-- No implemented real baselines.
+- Explicit physics audit is matched by kinematic residual, energy residual, learned uncertainty, autoencoder reconstruction, and supervised classifier baselines on combined violation shift.
+- Explicit audit false-flags 23.3% of nominal valid MuJoCo rollouts.
+- Ablations show several explicit checks can be removed without hurting combined-shift F1.
+- No real-robot validation or public benchmark replication.
 - No manual exhaustive related-work synthesis.
 
-The only honest main-conference-safe decision is to archive rather than overclaim.
+Real high-fidelity evidence now exists, but it supports archive rather than submission.

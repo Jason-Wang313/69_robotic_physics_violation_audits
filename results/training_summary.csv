@@ -1,0 +1,2 @@
+training_rows,positive_rate,classifier_train_accuracy,pca_components,threshold_physics,threshold_autoencoder
+90,0.8333,1.0000,6,134.3469,0.0007

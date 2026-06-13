@@ -10,10 +10,11 @@
 
 ## ICLR Main Bar
 - [ ] Real-robot validation.
-- [ ] High-fidelity simulator benchmark.
-- [ ] Implemented learned model.
-- [ ] Implemented real competing baselines.
+- [x] High-fidelity simulator benchmark.
+- [x] Implemented learned model.
+- [x] Implemented real competing baselines.
 - [ ] Manual related-work synthesis.
-- [ ] Paper-specific qualitative figures.
+- [x] Paper-specific empirical figures.
+- [x] Multiple seeds, uncertainty, ablations, stress sweep, pairwise comparisons, negative cases, and learned baseline summaries.
 
-Decision: fail ICLR main empirical-rigor gate; archive.
+Decision: fail ICLR main empirical-rigor gate for a stronger reason than v3. Real MuJoCo evidence now exists, but it falsifies the mechanism as a main-track contribution because simple and learned baselines match the explicit audit on the combined shift, while the audit has nontrivial false positives on valid traces.
