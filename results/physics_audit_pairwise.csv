@@ -1,0 +1,9 @@
+split,baseline,mean_f1_diff_vs_audit,paired_t_approx,normal_approx_p,seeds
+combined_violation_shift,random_flagger,0.3539,4.1865,0.0000,5
+combined_violation_shift,kinematic_residual_threshold,0.0000,0.0000,1.0000,5
+combined_violation_shift,energy_residual_threshold,0.0000,0.0000,1.0000,5
+combined_violation_shift,contact_impulse_threshold,0.8813,16.2915,0.0000,5
+combined_violation_shift,ensemble_dynamics_uncertainty,0.0000,0.0000,1.0000,5
+combined_violation_shift,autoencoder_reconstruction_audit,0.0000,0.0000,1.0000,5
+combined_violation_shift,supervised_failure_classifier,0.0000,0.0000,1.0000,5
+combined_violation_shift,oracle_violation_labels,0.0000,0.0000,1.0000,5

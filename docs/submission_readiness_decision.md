@@ -4,8 +4,8 @@ Decision: KILL_ARCHIVE
 
 ICLR main-conference readiness: NO.
 
-Reason: The strongest locally available evidence is synthetic and template-generated. The paper lacks real-robot or high-fidelity simulator validation, implemented learned baselines, manual full-paper related-work depth, and paper-specific empirical figures. These are not recoverable without new external experiments or a substantially new research project.
+Reason: v4 adds a real MuJoCo physics-violation audit benchmark, but the evidence is negative. The proposed explicit audit is matched by simple residual thresholds and learned uncertainty/reconstruction/classifier baselines on combined violation shift, and it false-flags 23.3% of nominal valid traces.
 
 Honest terminal action: archive/kill for ICLR main. Do not submit this paper to ICLR main in its current form.
 
-Revival condition: rebuild as a real empirical robotics paper with implemented model, strong real baselines, manual related work, and deployment evidence.
+Revival condition: build a harder public or hardware benchmark where explicit physics audits detect policy failures that strong learned and residual baselines miss while maintaining low false positives on valid rollouts.

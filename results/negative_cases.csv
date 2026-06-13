@@ -1,4 +1,5 @@
-case,expected_behavior,observed_success,lesson
-unmodeled_hardware_damage,planner abstains or requests human inspection,0.18,branch semantics cannot repair missing actuation
-semantic_goal_ambiguity,diagnostic physical probes do not solve language ambiguity,0.31,needs a separate instruction-grounding loop
-adversarial_sensor_dropout,tail-risk objective becomes conservative,0.39,sensor-health modeling is out of scope
+case,expected_behavior,observed_failure_mode,submission_implication
+sensor_timestamp_skew,audit should separate clock skew from physics violation,causality checks can flag asynchronous but physically valid traces,needs timestamp calibration before deployment claims
+legal_rare_bouncing_contact,high contact impulse can be physically valid,simple contact thresholds create false positives on rare impacts,requires impact-aware thresholds or learned contact regimes
+out_of_distribution_deformable_object,rigid-body audit should abstain,energy and support checks assume rigid object state,scope is rigid-body MuJoCo manipulation
+semantic_task_violation_with_valid_physics,physics audit should remain silent,all physics checks pass while the robot performs the wrong task,audit is not a complete safety monitor
