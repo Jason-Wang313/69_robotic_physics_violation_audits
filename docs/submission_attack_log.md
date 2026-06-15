@@ -2,7 +2,11 @@
 
 Paper: 69 robotic_physics_violation_audits
 
-This v3 pass applies the ICLR main-conference bar. The result is an honest archive decision, not a workshop resubmission.
+This v4 pass applies the ICLR main-conference bar. The result is an honest archive decision, not a workshop resubmission.
+
+## 2026-06-15 Continuation Note
+
+The earlier v3 objections about synthetic-only evidence are no longer the active reason for archive. The repository now contains real MuJoCo contact rollouts, controlled corruption injections, 420 rollout summaries, 3,780 main method-evaluation rows, 480 ablation rows, 1,200 stress-sweep rows, residual and learned baselines, pairwise tests, figures, and a rebuilt PDF. The current fatal problem is stronger: explicit physics audits are matched by residual and learned baselines on combined violation shift and false-flag 23.3% of nominal valid traces. Terminal decision remains `KILL_ARCHIVE`.
 
 ## ICLR Main Gate Round 1
 Attack: No real-robot validation.
