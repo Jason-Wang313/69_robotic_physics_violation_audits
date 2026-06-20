@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Recall at a 5\% false-positive budget. Thresholds are calibrated from valid-regime scores.}
+\label{tab:fixed-fpr}
+\scriptsize
+\begin{tabular}{lrrr}
+\toprule
+Method & Threshold & Hard recall & Valid scores \\
+\midrule
+Random & 0.989 & 0.057 & 448 \\
+Kin. residual & 2.045 & 0.545 & 448 \\
+Energy residual & 3.857 & 0.230 & 448 \\
+Contact residual & 0.066 & 0.279 & 448 \\
+Max residual & 478.362 & 0.313 & 448 \\
+Logistic stack & 0.674 & 0.843 & 448 \\
+HGB classifier & 0.027 & 1.000 & 448 \\
+RF ensemble & 0.402 & 1.000 & 448 \\
+IsolationForest & 0.607 & 0.463 & 448 \\
+PCA recon. & 0.019 & 0.944 & 448 \\
+Conformal residual & 1.283 & 0.881 & 448 \\
+Calibrated stack & 0.046 & 1.000 & 448 \\
+Old audit & 299.210 & 0.313 & 448 \\
+Audit v5 & 267.118 & 0.308 & 448 \\
+Oracle labels & 0.000 & 1.000 & 448 \\
+\bottomrule
+\end{tabular}
+\end{table}

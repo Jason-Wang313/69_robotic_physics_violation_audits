@@ -1,0 +1,28 @@
+\begin{table}[t]
+\centering
+\caption{Frozen aggregate metrics. F1/recall are higher-is-better; valid-regime FPR is lower-is-better.}
+\label{tab:aggregate-main}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & Hard F1 & Hard Rec. & Comb. F1 & Comb. Rec. & Valid FPR & Fixed-5\% Rec. \\
+\midrule
+Random & 0.692 & 0.529 & 0.637 & 0.467 & 0.473 & 0.057 \\
+Kin. residual & 0.707 & 0.546 & 0.985 & 0.970 & 0.054 & 0.545 \\
+Energy residual & 0.391 & 0.243 & 0.614 & 0.444 & 0.067 & 0.230 \\
+Contact residual & 0.432 & 0.275 & 0.500 & 0.333 & 0.038 & 0.279 \\
+Max residual & 0.491 & 0.326 & 0.693 & 0.530 & 0.091 & 0.313 \\
+Logistic stack & 0.914 & 0.841 & 0.997 & 0.994 & 0.051 & 0.843 \\
+HGB classifier & 1.000 & 1.000 & 1.000 & 1.000 & 0.098 & 1.000 \\
+RF ensemble & 1.000 & 1.000 & 1.000 & 1.000 & 0.087 & 1.000 \\
+IsolationForest & 0.556 & 0.386 & 0.811 & 0.681 & 0.034 & 0.463 \\
+PCA recon. & 0.985 & 0.971 & 1.000 & 1.000 & 0.109 & 0.944 \\
+Conformal residual & 0.848 & 0.735 & 0.800 & 0.667 & 0.034 & 0.881 \\
+Calibrated stack & 1.000 & 1.000 & 1.000 & 1.000 & 0.080 & 1.000 \\
+Old audit & 0.491 & 0.326 & 0.693 & 0.530 & 0.091 & 0.313 \\
+Audit v5 & 0.489 & 0.324 & 0.693 & 0.530 & 0.091 & 0.308 \\
+Oracle labels & 1.000 & 1.000 & 1.000 & 1.000 & 0.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

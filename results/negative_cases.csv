@@ -1,5 +1,6 @@
-case,expected_behavior,observed_failure_mode,submission_implication
-sensor_timestamp_skew,audit should separate clock skew from physics violation,causality checks can flag asynchronous but physically valid traces,needs timestamp calibration before deployment claims
-legal_rare_bouncing_contact,high contact impulse can be physically valid,simple contact thresholds create false positives on rare impacts,requires impact-aware thresholds or learned contact regimes
-out_of_distribution_deformable_object,rigid-body audit should abstain,energy and support checks assume rigid object state,scope is rigid-body MuJoCo manipulation
-semantic_task_violation_with_valid_physics,physics audit should remain silent,all physics checks pass while the robot performs the wrong task,audit is not a complete safety monitor
+case,observed_failure_mode,submission_implication
+sensor_timestamp_skew,causality checks can flag asynchronous but physically valid traces,needs timestamp calibration before deployment claims
+legal_rare_bouncing_contact,high contact impulse can be physically valid and can trigger contact residuals,requires impact-aware thresholds or learned contact regimes
+out_of_distribution_deformable_object,rigid-body audit assumes object state and contact geometry that may be invalid,scope is rigid-body MuJoCo manipulation
+semantic_task_violation_with_valid_physics,all physics checks pass while the robot performs the wrong task,audit is not a complete safety monitor
+adversarial_compensated_violation,corruption can be partially hidden by plausible work and contact proxies,scalar residuals and explicit checks both need stronger temporal modeling
