@@ -1,2 +1,2 @@
-training_rows,positive_rate,classifier_train_accuracy,pca_components,threshold_physics,threshold_autoencoder
-90,0.8333,1.0000,6,134.3469,0.0007
+training_rows,positive_rate,hgb_train_accuracy,pca_components,threshold_v4_physics,threshold_v5_physics,valid_calibration_quantile
+192,0.7083,1.0000,8,280.7424,250.8768,0.95

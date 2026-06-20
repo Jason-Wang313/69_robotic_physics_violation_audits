@@ -4,155 +4,190 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
+\usepackage{longtable}
 \usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{microtype}
 
-\title{Robotic Physics Violation Audits:\\A MuJoCo Negative Result}
-\author{Anonymous Authors}
+\hypersetup{
+  colorlinks=false,
+  pdfborder={0 0 1.8},
+  citebordercolor={0 1 0},
+  linkbordercolor={0 0.55 1},
+  urlbordercolor={1 0.45 0}
+}
+
+\input{generated/result_macros.tex}
+
+\title{Robotic Physics Violation Audits:\\A Frozen MuJoCo Stress Test and Negative Result}
+\author{Anonymous authors}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-This paper records a negative result for explicit physics-violation audits of robot rollouts.
-The hypothesis was that embodied policies and foundation-model planners may silently tolerate impossible physics, and that explicit checks for contact, support, energy, friction, actuator saturation, and causality should detect unsafe behavior better than generic residual or learned anomaly baselines.
-We rebuilt the idea as a MuJoCo contact-manipulation benchmark with real valid rollouts, controlled violation injections, learned uncertainty/reconstruction/classifier baselines, ablations, stress sweeps, and seed-level comparisons.
-The audit mechanism fails the submission gate.
-On combined violation shift, the proposed audit reaches F1 1.000, but so do kinematic residuals, energy residuals, ensemble uncertainty, autoencoder reconstruction, and supervised classifiers.
-On nominal valid MuJoCo traces, the explicit audit false-flags 23.3\% of rollouts.
-We therefore mark this project \textbf{KILL/ARCHIVE} for ICLR main.
+Explicit physics audits are appealing for robot safety: instead of trusting an opaque model score, a system can check whether a rollout violates contact, support, work-energy, friction, actuator, or causality constraints. This paper asks whether that mechanism survives a hostile ICLR-main protocol. We rebuild the idea in MuJoCo~\citep{todorov2012mujoco}, add rare valid contact regimes, timestamp skew, low-friction slip, subtle corruptions, adversarial compensated violations, strong residual baselines, learned classifiers, reconstruction/anomaly baselines, conformal calibration, ablations, fixed-FPR metrics, stress tests, and seed-level paired statistics. The frozen evidence contains \TrainingRows{} training rollouts, \RolloutRows{} main rollout summaries, \MainRows{} main method-evaluation rows, \AblationRows{} ablation rows, \StressRows{} stress rows, and \PairwiseRows{} paired comparisons. The terminal decision is \textbf{\PaperDecision}. The reason is not formatting or lack of effort: \PaperDecisionReason. The result is therefore a submission-readiness audit, not a polished success story. The explicit audit detects many injected violations, but strong learned and residual baselines detect them as well, and the audit is not robust enough on rare valid regimes to justify an ICLR-main claim.
 \end{abstract}
 
-\section{Question}
-Embodied foundation models and robot planners are increasingly evaluated through task success, but task success can hide physically impossible intermediate traces.
-Recent embodied-agent and physics-aware evaluation work already makes this a crowded area~\citep{prior1,prior2,prior3,prior5}.
-The proposed mechanism here was to audit rollouts by explicit violations: contact impulse inconsistent with acceleration, unsupported motion, work-energy mismatch, friction/slip inconsistency, actuator saturation hidden by smooth state traces, and non-causal state jumps.
+\section{Why This Paper Exists}
 
-The ICLR-main question is sharper than ``can physics checks detect injected errors?''
-The audit must beat strong residual and learned baselines while keeping false positives low on valid robot traces.
+Robotic systems can fail in ways that are not semantic, linguistic, or reward-based. A rollout may contain a contact impulse without corresponding acceleration, an unsupported object trajectory, hidden actuator saturation, or a non-causal state jump. This motivates explicit physics monitors for robot execution. Execution monitoring and anomaly detection are longstanding robot concerns~\citep{park2016multimodal,park2018multimodal}; modern simulators make it easy to generate controlled contact rollouts~\citep{todorov2012mujoco}; and generic anomaly detectors such as isolation forests, random forests, gradient boosting, reconstruction models, and conformal calibration provide strong alternatives~\citep{liu2008isolation,breiman2001random,freund1997decision,scholkopf2001support,angelopoulos2021gentle,vovk2005algorithmic}.
 
-\section{Benchmark}
-We implemented a MuJoCo pusher benchmark.
-Valid rollouts come from a controlled pusher interacting with a free box on a table.
-Each rollout records object position, velocity, pusher state, control, contact force, penetration proxy, support indicator, actuator saturation, and work proxy.
-We then create controlled corruptions that mimic silent physics violations:
-contact impulse without plausible acceleration, energy/work mismatch, unsupported levitation, actuator saturation with hidden motion, non-causal teleportation, and combined violation shift.
+The original hypothesis was stronger than ``physics checks can catch toy corruptions.'' It claimed that explicit physical structure provides a mechanism advantage over generic residual and learned detectors. Under hostile review, this claim has two obligations. First, explicit checks must beat strong baselines on hard corruptions. Second, they must avoid flagging valid but rare physical regimes as impossible. The v4 paper already failed a small version of this test. The v5 pass expands the test instead of hiding the failure.
 
-The seven main splits are nominal valid, contact corruption, energy/work corruption, support/levitation, actuator saturation, non-causal teleport, and combined violation shift.
-Each method scores the same held-out traces.
-Metrics are precision, recall, F1, accuracy, flag rate, and false-positive rate.
+\section{Problem Setup}
+
+A rollout is a sequence
+\[
+  \tau = \{x_t, u_t, c_t, f_t, s_t, w_t\}_{t=1}^{T},
+\]
+where $x_t$ is object state, $u_t$ is commanded pusher state, $c_t$ is contact state, $f_t$ is contact force, $s_t$ is support state, and $w_t$ is a work proxy. A detector outputs a score $a(\tau)$ and a binary flag $\hat{y}=\mathbb{1}[a(\tau)\geq \theta]$. Labels are controlled by the generator: $y=0$ for valid MuJoCo traces and $y=1$ for injected physics violations.
+
+The proposed family computes terms for contact/acceleration mismatch, support violation, work-energy mismatch, friction-slip inconsistency, hidden actuator saturation, and causality jumps. The v5 version adds two pre-freeze repairs: a timestamp guard for asynchronous but valid traces and a rare-valid contact guard for high-impulse but dynamically plausible impacts. Thresholds are calibrated from valid training traces.
+
+\section{Why Simple Baselines Are Dangerous}
+
+A benchmark with high-severity injected corruptions can be solved by scalar residuals. This is a benchmark-design problem, not a victory for explicit physics audits.
+
+\paragraph{Proposition 1: union-bound false-positive pressure.}
+Suppose an audit flags if any of $m$ checks exceeds its threshold. If check $j$ is calibrated to false-positive probability $\alpha_j$ on valid traces, then without modeling dependence the audit has false-positive probability at most $\sum_j \alpha_j$. Thus adding more checks can improve recall while worsening valid-regime reliability. A submission claim must report false positives on rare valid contacts, not only recall on injected violations.
+
+\paragraph{Proposition 2: scalar-separability non-identifiability.}
+If a corruption distribution is separable from valid traces by a scalar residual $r(\tau)$ with the same margin as the full audit score $a(\tau)$, then the full audit mechanism is not identified by that benchmark. Any paper claiming explicit physics structure must include corruptions and valid regimes that cannot be solved by scalar residuals alone.
+
+\paragraph{Proposition 3: component necessity.}
+Let $A$ be the full audit and $A_{-j}$ be the audit with component $j$ removed. If $A_{-j}$ matches $A$ within the pre-registered tolerance on hard corruptions and fixed-FPR recall, the evidence does not support component $j$ as necessary. The honest action is to report that ablation failure.
+
+\section{Frozen Protocol}
+
+The protocol was frozen after two development repairs recorded in \texttt{docs/paper69\_development\_log\_20260620.md}. After freezing, no method tuning is allowed. The final command uses 8 seeds, 14 main episodes per seed, 192 training scenes, 15 main splits, 15 methods, 12 ablations, 3 stress splits, 6 stress levels, and CPU-only sklearn/MuJoCo execution.
+
+The main splits are four valid regimes and eleven violation regimes. Valid regimes are nominal traces, rare valid bounces, valid clock skew, and valid low-friction slip. Violation regimes include contact, energy, support, actuator, non-causal, combined, subtle, timestamp, adversarial compensated, and near-threshold corruptions. This design intentionally makes the paper uncomfortable: rare valid regimes punish over-sensitive audits, while adversarial and near-threshold corruptions punish simple residual detectors.
 
 \section{Methods}
-We compare nine audit methods.
-\texttt{random\_flagger} is a lower bound.
-\texttt{kinematic\_residual\_threshold}, \texttt{energy\_residual\_threshold}, and \texttt{contact\_impulse\_threshold} are simple scalar checks.
-\texttt{ensemble\_dynamics\_uncertainty} is a small learned ensemble.
-\texttt{autoencoder\_reconstruction\_audit} uses PCA reconstruction from valid rollouts.
-\texttt{supervised\_failure\_classifier} is a learned classifier over rollout features.
-\texttt{physics\_violation\_audit} is the proposed explicit family of checks.
-\texttt{oracle\_violation\_labels} has access to injected labels and is an upper bound.
+
+The comparison set is intentionally hostile. It includes random flagging, scalar kinematic residuals, scalar energy residuals, contact impulse residuals, a max-residual detector, logistic residual stacking, histogram-gradient boosting, random-forest ensemble uncertainty, IsolationForest anomaly detection~\citep{liu2008isolation}, PCA reconstruction, conformal residual aggregation~\citep{angelopoulos2021gentle,vovk2005algorithmic}, a calibrated learned stack, the old v4 explicit audit, the new audit v5, and oracle violation labels. All methods score the same frozen rollout rows.
+
+The learned baselines are compact and CPU-only. This matters: the negative result is not caused by giving baselines huge neural networks. The learned stack and HGB classifier are small feature models, yet they still dominate or match the explicit audit.
 
 \section{Main Results}
-The main run contains 420 MuJoCo rollout summaries and 3,780 method-evaluation rows: 5 seeds, 12 episodes per seed, 7 splits, and 9 methods.
-The ablation suite adds 480 rows and the stress sweep adds 1,200 rows.
 
-\begin{table}[t]
-\centering
-\caption{Combined violation-shift results. The proposed audit is matched by simple and learned baselines.}
-\label{tab:combined}
-\begin{tabular}{lccccc}
-\toprule
-Method & F1 & Precision & Recall & Acc. & Flag \\
-\midrule
-\texttt{random\_flagger} & 0.667 & 1.000 & 0.500 & 0.500 & 0.500 \\
-\texttt{kinematic\_residual\_threshold} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\texttt{energy\_residual\_threshold} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\texttt{contact\_impulse\_threshold} & 0.125 & 1.000 & 0.067 & 0.067 & 0.067 \\
-\texttt{ensemble\_dynamics\_uncertainty} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\texttt{autoencoder\_reconstruction\_audit} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\texttt{supervised\_failure\_classifier} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\texttt{physics\_violation\_audit} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\texttt{oracle\_violation\_labels} & 1.000 & 1.000 & 1.000 & 1.000 & 1.000 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{generated/aggregate_metrics_table.tex}
+
+Table~\ref{tab:aggregate-main} is the core result. Audit v5 does not beat the strongest hard-corruption baseline by the frozen 0.030 F1 margin. It also loses the fixed-FPR recall gate: at a 5\% valid false-positive budget, v5 recall is far below the strongest learned baselines. This is exactly the failure a hostile reviewer would target.
+
+\input{generated/selected_split_table.tex}
+
+Table~\ref{tab:selected-splits} isolates the hardest splits. The combined split is no longer enough because many detectors can solve it. The adversarial and near-threshold splits reveal a clearer problem: the learned stack and HGB classifier recover violations that the explicit audit misses, while simple residuals still remain surprisingly strong.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{../figures/physics_audit_f1_by_split.png}
-\caption{F1 across physics-violation splits. The explicit audit is not uniquely strong; several simple and learned baselines match it on the combined split.}
+\caption{Frozen F1 by split. The proposed audit is not uniquely separated from residual or learned baselines.}
 \label{fig:f1}
 \end{figure}
 
-Table~\ref{tab:combined} is the terminal result.
-The explicit audit detects combined violations, but so do several simpler baselines.
-Pairwise seed comparisons show zero F1 difference versus kinematic residuals, energy residuals, ensemble uncertainty, autoencoder reconstruction, supervised classification, and the oracle labels on this split.
-That means the current benchmark does not support a novel main-track claim for explicit audits.
-
 \section{False Positives}
+
+\input{generated/valid_fpr_table.tex}
+
+Table~\ref{tab:valid-fpr} is as important as the main F1 table. Explicit audits are useful only if they do not routinely label valid but rare contact dynamics as impossible. The frozen gate was strict: v5 fails if any rare-valid split exceeds 0.100 false-positive rate. The final run records such a failure. That does not mean physics checks are useless; it means this implementation is not ready as a main-track claim.
+
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.86\linewidth]{../figures/physics_audit_false_positive_by_split.png}
-\caption{False-positive rates. On nominal valid traces, the explicit audit false-flags 23.3\% of rollouts.}
+\includegraphics[width=0.92\linewidth]{../figures/physics_audit_false_positive_by_split.png}
+\caption{False-positive rates across valid and corrupted splits. Rare valid contact and clock-skew regimes are the practical deployment pressure tests.}
 \label{fig:falsepos}
 \end{figure}
 
-False positives are the second blocker.
-On nominal valid traces, \texttt{physics\_violation\_audit} false-flags 23.3\% of rollouts.
-Some learned baselines are worse under the current calibration, false-flagging every nominal trace, but this does not rescue the proposed method.
-For a deployable audit, valid but rare contact dynamics must not be routinely flagged as impossible.
+\section{Fixed-FPR Recall}
 
-\section{Ablations and Stress}
-\begin{table}[t]
-\centering
-\caption{Combined-shift ablations. Several explicit checks can be removed without changing F1.}
-\label{tab:ablation}
-\begin{tabular}{lccc}
-\toprule
-Ablation & F1 & Precision & Recall \\
-\midrule
-\texttt{full\_physics\_violation\_audit} & 1.000 & 1.000 & 1.000 \\
-\texttt{no\_actuator\_check} & 1.000 & 1.000 & 1.000 \\
-\texttt{no\_causality\_check} & 1.000 & 1.000 & 1.000 \\
-\texttt{no\_contact\_check} & 1.000 & 1.000 & 1.000 \\
-\texttt{no\_energy\_check} & 1.000 & 1.000 & 1.000 \\
-\texttt{no\_support\_check} & 1.000 & 1.000 & 1.000 \\
-\texttt{no\_friction\_slip\_check} & 0.000 & 0.000 & 0.000 \\
-\texttt{scalar\_residual\_only} & 0.000 & 0.000 & 0.000 \\
-\bottomrule
-\end{tabular}
-\end{table}
+\input{generated/fixed_fpr_table.tex}
+
+The fixed-FPR analysis prevents a detector from winning merely by flagging everything. Thresholds are calibrated from valid-regime scores, then recall is measured on hard corruptions. Audit v5 trails HGB, random-forest, PCA, conformal, and calibrated-stack baselines at the 5\% false-positive budget. This is a decisive submission blocker.
+
+\section{Ablations}
+
+\input{generated/ablation_table.tex}
+
+The ablation result is not flattering. Several components can be removed without hurting combined-shift F1. The scalar-only variant also matches the full audit on the easy combined split. This does not prove the components are useless in all possible worlds, but it proves the frozen evidence does not identify them as necessary.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.82\linewidth]{../figures/physics_audit_ablation_f1.png}
-\caption{Physics-audit ablations. Several checks are redundant on the combined injected shift.}
+\includegraphics[width=0.86\linewidth]{../figures/physics_audit_ablation_f1.png}
+\caption{Combined-shift ablations. The benchmark is too easy for mechanism identification: many variants match full v5.}
 \label{fig:ablation}
 \end{figure}
 
-The ablation table is mixed.
-Removing friction/slip checking breaks the detector, but removing several other families does not hurt combined-shift F1.
-This suggests that the current corruptions are not diverse enough to justify a full multi-family audit mechanism.
+\section{Stress Sweep}
+
+\input{generated/stress_table.tex}
+
+The stress sweep jointly changes corruption severity, sensor noise, and valid-regime difficulty. The maximum-stress gate is designed to expose methods that work only at a convenient threshold. The frozen decision rule marks the paper killed if v5 loses the maximum-stress gate to any non-oracle baseline.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.82\linewidth]{../figures/physics_audit_stress_sweep.png}
-\caption{Stress sweep over sensor noise and corruption severity. The explicit audit is not uniquely separated from the learned/residual baselines.}
+\includegraphics[width=0.86\linewidth]{../figures/physics_audit_stress_sweep.png}
+\caption{Stress sweep on the combined-violation split. Strong learned/residual baselines remain competitive or superior.}
 \label{fig:stress}
 \end{figure}
 
+\section{Interpretation}
+
+The result should be read narrowly and honestly. It does not show that physics-aware execution monitoring is impossible. It shows that this explicit audit, on this frozen MuJoCo benchmark, does not provide evidence strong enough for ICLR main. Three mechanisms undermine the claim.
+
+First, scalar and learned baselines are too strong. If a small HGB classifier or calibrated stack reaches perfect or near-perfect hard-corruption performance, the explicit audit must justify why its structure matters beyond interpretability.
+
+Second, false positives remain a deployment problem. Rare valid contacts and clock skew are not corner cases in physical systems. A detector that confuses these with impossible physics can reduce autonomy or create alarm fatigue.
+
+Third, ablations do not identify the mechanism. If removing checks does not degrade the result, then the benchmark cannot support the claimed decomposition.
+
 \section{Limitations}
-This is a MuJoCo benchmark with controlled corruptions, not a real-robot audit.
-The corruptions are useful for falsification, but they can be too easy for simple residual thresholds.
-The learned baselines use compact rollout features rather than raw videos or robot logs.
-The related-work review is still based on local hostile-pool evidence rather than a complete manual synthesis.
-Those limitations would support a strong-revise decision if the proposed audit were clearly better.
-It is not.
+
+This is still a MuJoCo benchmark, not a hardware benchmark. The corruptions are controlled injections, not natural failures from a deployed robot. The learned baselines use compact feature vectors, not raw multimodal streams. The v5 guard terms are simple and may be insufficient for real timestamp synchronization. The oracle is label-only and is not deployable. These limitations would justify strong revise if the method clearly beat baselines. It does not.
+
+\section{Reproducibility}
+
+The final PDF is generated from frozen CSV artifacts. The build script first renders \texttt{paper/generated/*.tex}, then compiles the manuscript, then copies the numbered PDF to \texttt{C:/Users/wangz/Downloads/69.pdf}. No PDF is copied to Desktop. The validator checks row counts, figures, generated-table linkage, citation-box settings, 25+ pages, and artifact-location hygiene.
 
 \section{Decision}
-The submission gate required explicit physics checks to beat learned and residual baselines while maintaining low false positives on valid rollouts.
-The evidence fails that gate.
-The correct terminal action is \textbf{KILL/ARCHIVE}.
-Future work should use hardware logs or public embodied-agent traces, harder non-injected failures, timestamp calibration, impact-aware false-positive controls, and semantic safety checks before reviving this idea.
+
+The terminal decision is \textbf{\PaperDecision}. The frozen reason is:
+
+\begin{quote}
+\PaperDecisionReason
+\end{quote}
+
+The correct action is to archive this as a negative result. A credible revival would need hardware or public benchmark logs, non-injected natural failures, stronger timestamp calibration, impact-aware false-positive controls, and evidence that explicit physics structure beats learned/residual monitors at a fixed false-positive budget.
+
+\input{generated/negative_cases_table.tex}
+
+\clearpage
+\appendix
+
+\section{Full Main Metrics}
+\input{generated/full_metrics_longtable.tex}
+
+\section{Full Aggregate Metrics}
+\input{generated/full_aggregate_longtable.tex}
+
+\section{Full Ablation Metrics}
+\input{generated/full_ablation_longtable.tex}
+
+\section{Full Stress Metrics}
+\input{generated/full_stress_longtable.tex}
+
+\section{Pairwise Seed Comparisons}
+\input{generated/full_pairwise_longtable.tex}
+
+\section{Selected Seed Metrics}
+\input{generated/seed_metrics_selected_longtable.tex}
+
+\section{All Seed Metrics}
+\input{generated/all_seed_metrics_longtable.tex}
 
 \bibliographystyle{iclr2026_conference}
 \bibliography{references}

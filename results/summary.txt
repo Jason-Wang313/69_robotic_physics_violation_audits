@@ -1,36 +1,115 @@
-Paper 69 real MuJoCo robotic physics violation audits rebuild
-Seeds: [0, 1, 2, 3, 4]; episodes per seed: 12; workers: 4
-Main raw rollouts: 420; main eval rows: 3780; ablation rows: 480; stress rows: 1200
+Paper 69 expanded MuJoCo robotic physics violation audits rebuild
+Seeds: [0, 1, 2, 3, 4, 5, 6, 7]; episodes per seed: 14; workers: 4
+Training scenes: 192
+Main raw rollouts: 1680; main eval rows: 25200; ablation rows: 3840; stress rows: 9216
 Terminal decision: KILL_ARCHIVE
-Terminal reason: physics audit is matched or beaten by a non-oracle baseline on combined violation shift
+Terminal reason: v5 does not beat strongest non-oracle hard-corruption baseline calibrated_learned_stack by 0.030; v5 does not beat strongest combined/adversarial baseline calibrated_learned_stack by 0.030; v5 false-positive rate on at least one rare-valid split is 0.286 > 0.100; v5 recall at 5% FPR trails hgb_failure_classifier by more than 0.030; ablation gate fails because no_actuator_check, no_causality_check, no_conformal_aggregation, no_contact_check, no_energy_check, no_friction_slip_check, no_rare_valid_guard, no_support_check, no_timestamp_guard, old_v4_physics_audit, scalar_residual_only matches or beats full v5
 
-Combined-violation-shift main results:
-- random_flagger: f1=0.6667 precision=1.0000 recall=0.5000 fpr=0.0000 accuracy=0.5000 flag=0.5000
-- kinematic_residual_threshold: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
-- energy_residual_threshold: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
-- contact_impulse_threshold: f1=0.1250 precision=1.0000 recall=0.0667 fpr=0.0000 accuracy=0.0667 flag=0.0667
-- ensemble_dynamics_uncertainty: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
-- autoencoder_reconstruction_audit: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
-- supervised_failure_classifier: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
-- physics_violation_audit: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
-- oracle_violation_labels: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 accuracy=1.0000 flag=1.0000
+Combined/adversarial aggregate results:
+- random_flagger: f1=0.6369 precision=1.0000 recall=0.4673 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- kinematic_residual_threshold: f1=0.9849 precision=1.0000 recall=0.9702 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- energy_residual_threshold: f1=0.6144 precision=1.0000 recall=0.4435 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- contact_impulse_threshold: f1=0.5000 precision=1.0000 recall=0.3333 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- max_residual_detector: f1=0.6926 precision=1.0000 recall=0.5298 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- logistic_residual_stack: f1=0.9970 precision=1.0000 recall=0.9940 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- hgb_failure_classifier: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- random_forest_ensemble: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- isolation_forest_detector: f1=0.8106 precision=1.0000 recall=0.6815 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- pca_reconstruction_audit: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- conformal_residual_ensemble: f1=0.8000 precision=1.0000 recall=0.6667 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- calibrated_learned_stack: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- physics_violation_audit: f1=0.6926 precision=1.0000 recall=0.5298 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- physics_violation_audit_v5: f1=0.6926 precision=1.0000 recall=0.5298 fpr=0.0000 auroc=0.0000 auprc=1.0000
+- oracle_violation_labels: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000 auroc=0.0000 auprc=1.0000
 
-Combined-violation-shift ablations:
-- full_physics_violation_audit: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
+Valid-regime aggregate false positives:
+- random_flagger: fpr=0.4732 flag=0.4732 score=0.4827
+- kinematic_residual_threshold: fpr=0.0536 flag=0.0536 score=1.0953
+- energy_residual_threshold: fpr=0.0670 flag=0.0670 score=1.1695
+- contact_impulse_threshold: fpr=0.0379 flag=0.0379 score=0.0217
+- max_residual_detector: fpr=0.0915 flag=0.0915 score=258.5166
+- logistic_residual_stack: fpr=0.0513 flag=0.0513 score=0.2821
+- hgb_failure_classifier: fpr=0.0982 flag=0.0982 score=0.0388
+- random_forest_ensemble: fpr=0.0871 flag=0.0871 score=0.1299
+- isolation_forest_detector: fpr=0.0335 flag=0.0335 score=0.4538
+- pca_reconstruction_audit: fpr=0.1094 flag=0.1094 score=0.0060
+- conformal_residual_ensemble: fpr=0.0335 flag=0.0335 score=0.7853
+- calibrated_learned_stack: fpr=0.0804 flag=0.0804 score=0.0445
+- physics_violation_audit: fpr=0.0915 flag=0.0915 score=161.8503
+- physics_violation_audit_v5: fpr=0.0915 flag=0.0915 score=143.3573
+- oracle_violation_labels: fpr=0.0000 flag=0.0000 score=0.0000
+
+Ablations:
+- full_physics_violation_audit_v5: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
 - no_actuator_check: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
 - no_causality_check: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
+- no_conformal_aggregation: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
 - no_contact_check: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
 - no_energy_check: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
-- no_friction_slip_check: f1=0.0000 precision=0.0000 recall=0.0000 fpr=0.0000
+- no_friction_slip_check: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
+- no_rare_valid_guard: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
 - no_support_check: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
-- scalar_residual_only: f1=0.0000 precision=0.0000 recall=0.0000 fpr=0.0000
+- no_timestamp_guard: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
+- old_v4_physics_audit: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
+- scalar_residual_only: f1=1.0000 precision=1.0000 recall=1.0000 fpr=0.0000
 
-Pairwise combined-shift comparisons vs physics_violation_audit:
-- random_flagger: diff=0.3539 t=4.1865 p=0.0000
-- kinematic_residual_threshold: diff=0.0000 t=0.0000 p=1.0000
-- energy_residual_threshold: diff=0.0000 t=0.0000 p=1.0000
-- contact_impulse_threshold: diff=0.8813 t=16.2915 p=0.0000
-- ensemble_dynamics_uncertainty: diff=0.0000 t=0.0000 p=1.0000
-- autoencoder_reconstruction_audit: diff=0.0000 t=0.0000 p=1.0000
-- supervised_failure_classifier: diff=0.0000 t=0.0000 p=1.0000
-- oracle_violation_labels: diff=0.0000 t=0.0000 p=1.0000
+Recall at 5 percent FPR:
+- random_flagger: recall=0.0568 threshold=0.989044
+- kinematic_residual_threshold: recall=0.5455 threshold=2.045146
+- energy_residual_threshold: recall=0.2297 threshold=3.856770
+- contact_impulse_threshold: recall=0.2792 threshold=0.066213
+- max_residual_detector: recall=0.3133 threshold=478.361936
+- logistic_residual_stack: recall=0.8425 threshold=0.673608
+- hgb_failure_classifier: recall=1.0000 threshold=0.026540
+- random_forest_ensemble: recall=1.0000 threshold=0.401837
+- isolation_forest_detector: recall=0.4627 threshold=0.606624
+- pca_reconstruction_audit: recall=0.9440 threshold=0.019183
+- conformal_residual_ensemble: recall=0.8807 threshold=1.283375
+- calibrated_learned_stack: recall=1.0000 threshold=0.045990
+- physics_violation_audit: recall=0.3133 threshold=299.210243
+- physics_violation_audit_v5: recall=0.3076 threshold=267.118438
+- oracle_violation_labels: recall=1.0000 threshold=0.000000
+
+Pairwise comparisons vs physics_violation_audit_v5:
+- combined_violation_shift / random_flagger: diff=0.3683 t=16.7918 p=0.0000
+- combined_violation_shift / kinematic_residual_threshold: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / energy_residual_threshold: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / contact_impulse_threshold: diff=1.0000 t=1000000.0000 p=0.0000
+- combined_violation_shift / max_residual_detector: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / logistic_residual_stack: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / hgb_failure_classifier: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / random_forest_ensemble: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / isolation_forest_detector: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / pca_reconstruction_audit: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / conformal_residual_ensemble: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / calibrated_learned_stack: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / physics_violation_audit: diff=0.0000 t=0.0000 p=1.0000
+- combined_violation_shift / oracle_violation_labels: diff=0.0000 t=0.0000 p=1.0000
+- adversarial_compensated_violation / random_flagger: diff=0.1171 t=1.5539 p=0.1202
+- adversarial_compensated_violation / kinematic_residual_threshold: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / energy_residual_threshold: diff=0.2604 t=2.5684 p=0.0102
+- adversarial_compensated_violation / contact_impulse_threshold: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / max_residual_detector: diff=0.0000 t=0.0000 p=1.0000
+- adversarial_compensated_violation / logistic_residual_stack: diff=-0.2612 t=-5.0978 p=0.0000
+- adversarial_compensated_violation / hgb_failure_classifier: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / random_forest_ensemble: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / isolation_forest_detector: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / pca_reconstruction_audit: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / conformal_residual_ensemble: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / calibrated_learned_stack: diff=-0.2705 t=-5.6216 p=0.0000
+- adversarial_compensated_violation / physics_violation_audit: diff=0.0000 t=0.0000 p=1.0000
+- adversarial_compensated_violation / oracle_violation_labels: diff=-0.2705 t=-5.6216 p=0.0000
+- mixed_near_threshold / random_flagger: diff=-0.6369 t=-11.7251 p=0.0000
+- mixed_near_threshold / kinematic_residual_threshold: diff=-0.9515 t=-57.2699 p=0.0000
+- mixed_near_threshold / energy_residual_threshold: diff=-0.0167 t=-1.0000 p=0.3173
+- mixed_near_threshold / contact_impulse_threshold: diff=0.0000 t=0.0000 p=1.0000
+- mixed_near_threshold / max_residual_detector: diff=0.0000 t=0.0000 p=1.0000
+- mixed_near_threshold / logistic_residual_stack: diff=-1.0000 t=-1000000.0000 p=0.0000
+- mixed_near_threshold / hgb_failure_classifier: diff=-1.0000 t=-1000000.0000 p=0.0000
+- mixed_near_threshold / random_forest_ensemble: diff=-1.0000 t=-1000000.0000 p=0.0000
+- mixed_near_threshold / isolation_forest_detector: diff=-0.0792 t=-1.9464 p=0.0516
+- mixed_near_threshold / pca_reconstruction_audit: diff=-1.0000 t=-1000000.0000 p=0.0000
+- mixed_near_threshold / conformal_residual_ensemble: diff=0.0000 t=0.0000 p=1.0000
+- mixed_near_threshold / calibrated_learned_stack: diff=-1.0000 t=-1000000.0000 p=0.0000
+- mixed_near_threshold / physics_violation_audit: diff=0.0000 t=0.0000 p=1.0000
+- mixed_near_threshold / oracle_violation_labels: diff=-1.0000 t=-1000000.0000 p=0.0000

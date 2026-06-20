@@ -1,0 +1,75 @@
+{\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{longtable}{llrrrrrr}
+\caption{Full aggregate metrics.}\label{tab:full-aggregate}\\
+\toprule
+Split & Method & Episodes & F1 & Prec. & Rec. & FPR & AUROC \\
+\midrule
+\endfirsthead
+\toprule
+Split & Method & Episodes & F1 & Prec. & Rec. & FPR & AUROC \\
+\midrule
+\endhead
+all & Random & 1680 & 0.622 & 0.755 & 0.529 & 0.473 & 0.529 \\
+all & Random & 448 & 0.000 & 0.000 & 0.000 & 0.473 & 0.000 \\
+all & Random & 1232 & 0.692 & 1.000 & 0.529 & 0.000 & 0.000 \\
+all & Random & 336 & 0.637 & 1.000 & 0.467 & 0.000 & 0.000 \\
+all & Kin. residual & 1680 & 0.698 & 0.966 & 0.546 & 0.054 & 0.803 \\
+all & Kin. residual & 448 & 0.000 & 0.000 & 0.000 & 0.054 & 0.000 \\
+all & Kin. residual & 1232 & 0.707 & 1.000 & 0.546 & 0.000 & 0.000 \\
+all & Kin. residual & 336 & 0.985 & 1.000 & 0.970 & 0.000 & 0.000 \\
+all & Energy residual & 1680 & 0.383 & 0.909 & 0.243 & 0.067 & 0.582 \\
+all & Energy residual & 448 & 0.000 & 0.000 & 0.000 & 0.067 & 0.000 \\
+all & Energy residual & 1232 & 0.391 & 1.000 & 0.243 & 0.000 & 0.000 \\
+all & Energy residual & 336 & 0.614 & 1.000 & 0.444 & 0.000 & 0.000 \\
+all & Contact residual & 1680 & 0.427 & 0.952 & 0.275 & 0.038 & 0.609 \\
+all & Contact residual & 448 & 0.000 & 0.000 & 0.000 & 0.038 & 0.000 \\
+all & Contact residual & 1232 & 0.432 & 1.000 & 0.275 & 0.000 & 0.000 \\
+all & Contact residual & 336 & 0.500 & 1.000 & 0.333 & 0.000 & 0.000 \\
+all & Max residual & 1680 & 0.479 & 0.907 & 0.326 & 0.091 & 0.470 \\
+all & Max residual & 448 & 0.000 & 0.000 & 0.000 & 0.091 & 0.000 \\
+all & Max residual & 1232 & 0.491 & 1.000 & 0.326 & 0.000 & 0.000 \\
+all & Max residual & 336 & 0.693 & 1.000 & 0.530 & 0.000 & 0.000 \\
+all & Logistic stack & 1680 & 0.904 & 0.978 & 0.841 & 0.051 & 0.973 \\
+all & Logistic stack & 448 & 0.000 & 0.000 & 0.000 & 0.051 & 0.000 \\
+all & Logistic stack & 1232 & 0.914 & 1.000 & 0.841 & 0.000 & 0.000 \\
+all & Logistic stack & 336 & 0.997 & 1.000 & 0.994 & 0.000 & 0.000 \\
+all & HGB classifier & 1680 & 0.983 & 0.966 & 1.000 & 0.098 & 1.000 \\
+all & HGB classifier & 448 & 0.000 & 0.000 & 0.000 & 0.098 & 0.000 \\
+all & HGB classifier & 1232 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & HGB classifier & 336 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & RF ensemble & 1680 & 0.984 & 0.969 & 1.000 & 0.087 & 1.000 \\
+all & RF ensemble & 448 & 0.000 & 0.000 & 0.000 & 0.087 & 0.000 \\
+all & RF ensemble & 1232 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & RF ensemble & 336 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & IsolationForest & 1680 & 0.552 & 0.969 & 0.386 & 0.034 & 0.937 \\
+all & IsolationForest & 448 & 0.000 & 0.000 & 0.000 & 0.034 & 0.000 \\
+all & IsolationForest & 1232 & 0.556 & 1.000 & 0.386 & 0.000 & 0.000 \\
+all & IsolationForest & 336 & 0.811 & 1.000 & 0.681 & 0.000 & 0.000 \\
+all & PCA recon. & 1680 & 0.966 & 0.961 & 0.971 & 0.109 & 0.989 \\
+all & PCA recon. & 448 & 0.000 & 0.000 & 0.000 & 0.109 & 0.000 \\
+all & PCA recon. & 1232 & 0.985 & 1.000 & 0.971 & 0.000 & 0.000 \\
+all & PCA recon. & 336 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & Conformal residual & 1680 & 0.842 & 0.984 & 0.735 & 0.034 & 0.947 \\
+all & Conformal residual & 448 & 0.000 & 0.000 & 0.000 & 0.034 & 0.000 \\
+all & Conformal residual & 1232 & 0.848 & 1.000 & 0.735 & 0.000 & 0.000 \\
+all & Conformal residual & 336 & 0.800 & 1.000 & 0.667 & 0.000 & 0.000 \\
+all & Calibrated stack & 1680 & 0.986 & 0.972 & 1.000 & 0.080 & 1.000 \\
+all & Calibrated stack & 448 & 0.000 & 0.000 & 0.000 & 0.080 & 0.000 \\
+all & Calibrated stack & 1232 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & Calibrated stack & 336 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & Old audit & 1680 & 0.479 & 0.907 & 0.326 & 0.091 & 0.471 \\
+all & Old audit & 448 & 0.000 & 0.000 & 0.000 & 0.091 & 0.000 \\
+all & Old audit & 1232 & 0.491 & 1.000 & 0.326 & 0.000 & 0.000 \\
+all & Old audit & 336 & 0.693 & 1.000 & 0.530 & 0.000 & 0.000 \\
+all & Audit v5 & 1680 & 0.477 & 0.907 & 0.324 & 0.091 & 0.475 \\
+all & Audit v5 & 448 & 0.000 & 0.000 & 0.000 & 0.091 & 0.000 \\
+all & Audit v5 & 1232 & 0.489 & 1.000 & 0.324 & 0.000 & 0.000 \\
+all & Audit v5 & 336 & 0.693 & 1.000 & 0.530 & 0.000 & 0.000 \\
+all & Oracle labels & 1680 & 1.000 & 1.000 & 1.000 & 0.000 & 1.000 \\
+all & Oracle labels & 448 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+all & Oracle labels & 1232 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+all & Oracle labels & 336 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+\bottomrule
+\end{longtable}
+}

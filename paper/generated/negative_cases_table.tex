@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Pre-specified negative cases beyond the local benchmark scope.}
+\label{tab:negative-cases}
+\scriptsize
+\begin{tabular}{p{0.22\linewidth}p{0.34\linewidth}p{0.34\linewidth}}
+\toprule
+Case & Observed failure mode & Submission implication \\
+\midrule
+sensor timestamp skew & causality checks can flag asynchronous but physically valid traces & needs timestamp calibration before deployment claims \\
+legal rare bouncing contact & high contact impulse can be physically valid and can trigger contact residuals & requires impact-aware thresholds or learned contact regimes \\
+out of distribution deformable object & rigid-body audit assumes object state and contact geometry that may be invalid & scope is rigid-body MuJoCo manipulation \\
+semantic task violation with valid physics & all physics checks pass while the robot performs the wrong task & audit is not a complete safety monitor \\
+adversarial compensated violation & corruption can be partially hidden by plausible work and contact proxies & scalar residuals and explicit checks both need stronger temporal modeling \\
+\bottomrule
+\end{tabular}
+\end{table}

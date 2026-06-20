@@ -1,0 +1,63 @@
+{\scriptsize
+\setlength{\tabcolsep}{2.5pt}
+\begin{longtable}{llrrrrrr}
+\caption{Full ablation metrics.}\label{tab:full-ablation}\\
+\toprule
+Split & Method & Episodes & F1 & Prec. & Rec. & FPR & AUROC \\
+\midrule
+\endfirsthead
+\toprule
+Split & Method & Episodes & F1 & Prec. & Rec. & FPR & AUROC \\
+\midrule
+\endhead
+adversarial\_compensated\_violation & Full v5 & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No actuator & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No causality & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No conformal agg. & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No contact & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No energy & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No friction & 80 & 0.797 & 1.000 & 0.662 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No rare-valid & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No support & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & No timestamp & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & Old v4 & 80 & 0.740 & 1.000 & 0.588 & 0.000 & 0.000 \\
+adversarial\_compensated\_violation & Scalar only & 80 & 0.161 & 1.000 & 0.087 & 0.000 & 0.000 \\
+combined\_violation\_shift & Full v5 & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No actuator & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No causality & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No conformal agg. & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No contact & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No energy & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No friction & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No rare-valid & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No support & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & No timestamp & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & Old v4 & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+combined\_violation\_shift & Scalar only & 80 & 1.000 & 1.000 & 1.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & Full v5 & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No actuator & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No causality & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No conformal agg. & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No contact & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No energy & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No friction & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No rare-valid & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No support & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & No timestamp & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & Old v4 & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+mixed\_near\_threshold & Scalar only & 80 & 0.000 & 0.000 & 0.000 & 0.000 & 0.000 \\
+rare\_valid\_bounce & Full v5 & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No actuator & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No causality & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No conformal agg. & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No contact & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No energy & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No friction & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No rare-valid & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No support & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & No timestamp & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & Old v4 & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+rare\_valid\_bounce & Scalar only & 80 & 0.000 & 0.000 & 0.000 & 0.050 & 0.000 \\
+\bottomrule
+\end{longtable}
+}
